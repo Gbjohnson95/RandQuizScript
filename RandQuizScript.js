@@ -29,7 +29,7 @@ $(".questions").each(function () { // Gets the question blocks
 		UserID = $("div[id='UserID']").first().text(); // Get the UserID
 		$(questions[(UserID * (dateT + 1)) % questions.length]).show(); //  Show the selected question
 		$(questions).filter("[style='display: none;']").remove(); // Delete the other questions
-		$(questions).removeAttr("class"); // Drop the class for some reason
+		$(questions).removeAttr("class"); // Drop the class so that other instances of the script wont be tempted to touch something thats been done.
 	} else { // If theres no UserID then the function to get it failed
 		console.error("If you're reading this something done broke and random question texts where displayed");
 		$(".questions").each(function () {
