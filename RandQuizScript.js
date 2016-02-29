@@ -12,7 +12,7 @@ if (window.jQuery) { // If JQuery is running
     }
     if ($("label").length > 0) { // Looks for labels. Labels are used to display time stamp
         if ($("label")[0].innerHTML.indexOf("Written:") === 0) { // Look for a timestamp
-            var datestring = $("label")[0].innerHTML.substring(13); .// Get the datestring
+            var datestring = $("label")[0].innerHTML.substring(13); // Get the datestring
             var dateT = datestring.substring(0, 2) + "" + parseInt((parseInt(datestring.substring(8, 11)) + 3) / 4); // Generate a DDQ format time stamp. DD is day, Q is quarter of the day.
         } else {
             var curDate = new Date(); // Get current date
