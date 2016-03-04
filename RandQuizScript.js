@@ -1,6 +1,5 @@
-$(".question").hide();
-if ($("#CurAttempt").length === 0 && $("#UserId").length === 0) {
-	$('body').append('<div id="CurAttempt" style="display: none;"></div>');
+if ($("#CurrentAttempt").length === 0 && $("#UserId").length === 0) {
+	$('body').append('<div id="CurrentAttempt" style="display: none;"></div>');
 	$('body').append('<div id="UserId" style="display: none;"></div>');
 }
 if ($("#UserId").attr("progress") == null) {
@@ -12,35 +11,33 @@ if ($("#UserId").attr("progress") == null) {
 		selectQuestions();
 	});
 }
-if ($("#CurAttempt").first().attr("progress") == null) {
-	$("#CurAttempt").attr("progress", "started");
-	if ($("form[action*='quiz_submissions_attempt']").length !== 0) {
-		$("#CurAttempt").html($(".vui-heading-3").first().html().match(/\d+/)[0]);
-		$("#CurAttempt").attr("progress", "complete");
+if ($("#CurrentAttempt").first().attr("progress") == null) {
+	var curAttempt = $("#CurrentAttempt");
+	$(curAttempt).attr("progress", "started");
+	if ($('form[action*="quiz_attempt_page"]').length > 0) {
+		$(curAttempt).attr("progress", "complete");
+		$(curAttempt).html($($(top.document).find("iframe[src*='quiz_start_frame']").contents().find("frame[src*='quiz_attempt_top']")[0]).contents().find("label#z_f").first().html().match(/\d+/)[0]);
+		selectQuestions();
+	} else if ($("form[action*='quiz_submissions_attempt']").length !== 0) {
+		$(curAttempt).html($(".vui-heading-3").first().html().match(/\d+/)[0]);
+		$(curAttempt).attr("progress", "complete");
+		selectQuestions();
+	} else if (getParameterByName("qi") == null) {
+		$(curAttempt).html(1);
+		$(curAttempt).attr("progress", "complete");
 		selectQuestions();
 	} else {
-		if (getParameterByName("qi") == null) {
-			var quizurl = "https://byui.brightspace.com/d2l/lms/quizzing/user/quiz_summary.d2l?qi=" + getParameterByName("ci") + "&ou=" + getParameterByName("ou");
-		} else {
-			var quizurl = "https://byui.brightspace.com/d2l/lms/quizzing/user/quiz_summary.d2l?qi=" + getParameterByName("qi") + "&ou=" + getParameterByName("ou");
-		}
-		$.get(quizurl, function (data) {
-			var attemptlabel = $("<div />").html(data).find("#z_m")[0].innerHTML;
-			var curattempt = parseInt(attemptlabel.substr(attemptlabel.indexOf("Completed - ") + 12, 2));
-			if (isNaN(curattempt)) {
-				curattempt = 0;
-			}
-			$("#CurAttempt").html(curattempt + 1);
-			$("#CurAttempt").attr("progress", "complete");
-			selectQuestions();
-		});
+		$(curAttempt).attr("progress", "complete");
+		$(curAttempt).html("1");
+		selectQuestions();
 	}
 }
 function selectQuestions() {
-	if ($("#UserId").attr("progress") == "complete" && $("#CurAttempt").attr("progress") == "complete") {
+	if ($("#UserId").attr("progress") == "complete" && $("#CurrentAttempt").attr("progress") == "complete") {
+		$(".question").hide();
 		$(".questions").each(function () {
 			questions = $(this).children(".question");
-			$(questions[(UserId * parseInt($("#CurAttempt").html())) % questions.length]).show();
+			$(questions[(UserId * parseInt($("#CurrentAttempt").html())) % questions.length]).show();
 			$(questions).filter("[style='display: none;']").remove();
 			$(questions).removeAttr("class");
 			$(this).removeAttr("class");
